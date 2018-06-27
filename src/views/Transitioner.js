@@ -136,6 +136,7 @@ class Transitioner extends React.Component {
     const animations =
       indexHasChanged && positionHasChanged
         ? [
+            ...this.props.animations ? this.props.animations() : [],
             timing(progress, {
               ...transitionSpec,
               toValue: 1,
