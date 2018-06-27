@@ -150,19 +150,20 @@ class Transitioner extends React.Component {
     // update scenes and play the transition
     this._isTransitionRunning = true;
     this.setState(nextState, async () => {
-      if (nextProps.onTransitionStart) {
-        let animationsToRunInParellel = []
+      let animationsToRunInParellel
 
+      if (nextProps.onTransitionStart) {
         const result = nextProps.onTransitionStart(
           this._transitionProps,
           this._prevTransitionProps
         );
 
         if (result instanceof Promise) {
-          animationsToRunInParellel = await result || [];
+          animationsToRunInParellel = await result;
         }
       }
-      Animated.parallel([...animations, ...animationsToRunInParellel]).start(this._onTransitionEnd);
+
+      Animated.parallel([...animations, ...animationsToRunInParellel || []]).start(this._onTransitionEnd);
     });
   }
 
