@@ -136,7 +136,6 @@ class Transitioner extends React.Component {
     const animations =
       indexHasChanged && positionHasChanged
         ? [
-            ...this.props.animations ? this.props.animations() : [],
             timing(progress, {
               ...transitionSpec,
               toValue: 1,
@@ -152,16 +151,18 @@ class Transitioner extends React.Component {
     this._isTransitionRunning = true;
     this.setState(nextState, async () => {
       if (nextProps.onTransitionStart) {
+        let animationsToRunInParellel = []
+
         const result = nextProps.onTransitionStart(
           this._transitionProps,
           this._prevTransitionProps
         );
 
         if (result instanceof Promise) {
-          await result;
+          animationsToRunInParellel = await result || [];
         }
       }
-      Animated.parallel(animations).start(this._onTransitionEnd);
+      Animated.parallel([...animations, ...animationsToRunInParellel]).start(this._onTransitionEnd);
     });
   }
 
