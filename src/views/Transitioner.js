@@ -163,7 +163,11 @@ class Transitioner extends React.Component {
         }
       }
 
-      Animated.parallel([...animations, ...animationsToRunInParellel || []]).start(this._onTransitionEnd);
+      if (typeof animationsToRunInParellel === 'function') {
+        return animationsToRunInParellel(animations, this._onTransitionEnd)
+      }
+
+      Animated.parallel([...animations, ...Array.isArray(animationsToRunInParellel) ? animationsToRunInParellel : []]).start(this._onTransitionEnd);
     });
   }
 
